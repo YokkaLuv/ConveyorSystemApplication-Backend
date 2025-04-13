@@ -1,42 +1,45 @@
 package com.server.mechacal.services;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Date;
 
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.gridfs.GridFsResource;
+import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.mongodb.client.gridfs.model.GridFSFile;
+
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
+
 @Service
 public class FileService {
-    public String uploadFile(String path, MultipartFile file) throws IOException {
-        Date currentTime = new Date(System.currentTimeMillis());
-        String fileName = String.valueOf(currentTime.getTime()) + "_" + file.getOriginalFilename();
-        String filePath = path + File.separator + fileName;
 
-        File newFile = new File(path);
-        if (!newFile.exists()) {
-            newFile.mkdirs();
-        }
+    @Autowired
+    private GridFsTemplate gridFsTemplate;
 
-        Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
-        return fileName;
-    }  
-    
-    public String deleteFile(String path, String fileName) throws IOException {
-        String filePath = path + File.separator + fileName;
-        Files.deleteIfExists(Paths.get(filePath));
+    public String uploadFile(MultipartFile file) throws IOException 
+    {
+        String filename = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        ObjectId fileId = gridFsTemplate.store(file.getInputStream(), filename, file.getContentType());
+        return fileId.toHexString();
+    }
 
-        return "File deleted: " + fileName;
+    public InputStream getResourceFile(String fileId) throws IOException 
+    {
+        GridFSFile file = gridFsTemplate.findOne(query(where("_id").is(new ObjectId(fileId))));
+        if (file == null) throw new IOException("File not found");
+        GridFsResource resource = gridFsTemplate.getResource(file);
+        return resource.getInputStream();
     }
     
-    public InputStream getResoureFile(String path, String fileName) throws IOException {
-        String filePath = path + File.separator + fileName;
-        return new FileInputStream(filePath);
+
+    public String deleteFile(String fileId) 
+    {
+        gridFsTemplate.delete(query(where("_id").is(new ObjectId(fileId))));
+        return "File deleted: " + fileId;
     }
 }

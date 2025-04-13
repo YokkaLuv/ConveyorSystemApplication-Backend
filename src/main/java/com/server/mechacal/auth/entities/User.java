@@ -48,7 +48,7 @@ public class User implements UserDetails
     private String email;
     
     @NotBlank(message = "The password field can't be blank")
-    @Size(min = 5, message = "The password must have at least 5 characters")
+    @Size(min = 8, message = "The password must have at least 5 characters")
     private String password;
 
     @DocumentReference
@@ -107,5 +107,6 @@ public class User implements UserDetails
     public void update(UserDto dto) {
         if (dto.getName() != null) name = dto.getName();
         if (dto.getPhoneNumber() != null) phoneNumber = dto.getPhoneNumber();
+        if (dto.getRole() != null) role = dto.getRole();
     }
 }

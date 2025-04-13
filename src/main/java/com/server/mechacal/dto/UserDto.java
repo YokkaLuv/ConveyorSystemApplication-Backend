@@ -3,6 +3,7 @@ package com.server.mechacal.dto;
 
 import org.springframework.beans.factory.annotation.Value;
 import com.server.mechacal.auth.entities.User;
+import com.server.mechacal.auth.entities.UserRole;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,12 +26,14 @@ public class UserDto {
 
     private String email;
 
+    private UserRole role;
+
     public void update(User user) {
         if (user.getUserId() != null) userId = user.getUserId();
         if (user.getName() != null) name = user.getName();
         if (user.getPhoneNumber() != null) phoneNumber = user.getPhoneNumber();
         if (user.getEmail() != null) email = user.getEmail();
         if (user.getImageName() != null) imageUrl = "/file/" + user.getImageName();
-        
+        if (user.getRole() != null) role = user.getRole();
     }
 }

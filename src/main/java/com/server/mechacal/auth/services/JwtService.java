@@ -16,14 +16,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-// This class is the utility class for generating, validating and
-// extracting information from JWT
 @Service
 public class JwtService {
     @Value("${jwt.secretKey}")
     private String secretKey;
 
-    // extract username from JWT
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -33,7 +30,6 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    // extract information from JWT
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()
@@ -43,9 +39,7 @@ public class JwtService {
                 .getBody();
     }
 
-    // decode and get the key
     private Key getSignInKey() {
-        // decode SECRET_KEY
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
@@ -55,7 +49,6 @@ public class JwtService {
         return generateToken(new HashMap<>(), userDetails);
     }
 
-    // generate token using Jwt utility class and return token as String
     public String generateToken(
             Map<String, Object> extraClaims,
             UserDetails userDetails
@@ -72,18 +65,15 @@ public class JwtService {
                 .compact();
     }
 
-    // if token is valid by checking if token is expired for current user
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    // if token is expired
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    // get expiration date from token
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
