@@ -67,4 +67,12 @@ public class UserInfoService {
 
         return response;
     }
+
+    public User getEntityById(String userId) 
+    {
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new UserNotFoundException("User not found!"));
+    }
+    
+
 }

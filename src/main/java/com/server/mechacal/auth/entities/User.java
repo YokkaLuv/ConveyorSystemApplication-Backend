@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -41,6 +42,12 @@ public class User implements UserDetails
     private String imageName;
 
     private String username;
+
+    @Builder.Default
+    private List<String> sessionIds = new ArrayList<>();
+
+    // @Builder.Default
+    // private List<String> linkedStudentIds = new ArrayList<>();
     
     @NotBlank(message = "The email field can't be blank")
     @Indexed(unique = true)
@@ -108,5 +115,7 @@ public class User implements UserDetails
         if (dto.getName() != null) name = dto.getName();
         if (dto.getPhoneNumber() != null) phoneNumber = dto.getPhoneNumber();
         if (dto.getRole() != null) role = dto.getRole();
+        if (dto.getSessionIds() != null) sessionIds = dto.getSessionIds();
+        // if (dto.getLinkedStudentIds() != null) linkedStudentIds = dto.getLinkedStudentIds();
     }
 }

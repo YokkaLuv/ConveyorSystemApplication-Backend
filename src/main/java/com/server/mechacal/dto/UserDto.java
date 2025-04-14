@@ -1,6 +1,6 @@
 package com.server.mechacal.dto;
 
-
+import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import com.server.mechacal.auth.entities.User;
 import com.server.mechacal.auth.entities.UserRole;
@@ -28,6 +28,10 @@ public class UserDto {
 
     private UserRole role;
 
+    private List<String> sessionIds;
+
+    // private List<String> linkedStudentIds;
+
     public void update(User user) {
         if (user.getUserId() != null) userId = user.getUserId();
         if (user.getName() != null) name = user.getName();
@@ -35,5 +39,7 @@ public class UserDto {
         if (user.getEmail() != null) email = user.getEmail();
         if (user.getImageName() != null) imageUrl = "/file/" + user.getImageName();
         if (user.getRole() != null) role = user.getRole();
+        if (user.getSessionIds() != null) sessionIds = user.getSessionIds();
+        // if (user.getLinkedStudentIds() != null) linkedStudentIds = user.getLinkedStudentIds();
     }
 }
