@@ -116,6 +116,17 @@ public class WorkSessionService {
                 .build();
     
         WorkSession savedSession = workSessionRepository.save(session);
+
+        String sessionId = savedSession.getId();
+
+        for (User participant : participants) {
+            if (participant.getSessionIds() == null) {
+                participant.setSessionIds(new ArrayList<>());
+            }
+            participant.getSessionIds().add(sessionId);
+        }
+
+        userRepository.saveAll(participants);
     
         WorkSessionDto response = new WorkSessionDto();
         response.update(savedSession);
