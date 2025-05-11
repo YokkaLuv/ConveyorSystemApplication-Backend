@@ -28,6 +28,8 @@ public class WorkSessionDto {
 
     private String status;
 
+    private String designInputId;
+
     public void update(WorkSession session) {
         if (session.getId() != null) id = session.getId();
         if (session.getTitle() != null) title = session.getTitle();
@@ -47,5 +49,6 @@ public class WorkSessionDto {
                 }
             }
         }
+        if(session.getDesignInput() != null) designInputId = session.getDesignInput().getId();
     }
 }

@@ -3,6 +3,7 @@ package com.server.mechacal.services;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,14 +16,16 @@ import com.server.mechacal.exceptions.UserNotFoundException;
 public class UserInfoService {
     private final UserRepository userRepository;
     private final FileService fileService;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${base.url}")
     private String baseUrl;
 
-    public UserInfoService(UserRepository userRepository, FileService fileService) 
+    public UserInfoService(UserRepository userRepository, FileService fileService, PasswordEncoder passwordEncoder) 
     {
         this.userRepository = userRepository;
         this.fileService = fileService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserDto getInfo(String username) 
@@ -74,5 +77,17 @@ public class UserInfoService {
             .orElseThrow(() -> new UserNotFoundException("User not found!"));
     }
     
+    public void changePassword(String username, String currentPassword, String newPassword) {
+    User user = userRepository.findByEmail(username)
+        .orElseThrow(() -> new UserNotFoundException("User not found!"));
+
+    if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+        throw new RuntimeException("Current password is incorrect");
+    }
+
+    user.setPassword(passwordEncoder.encode(newPassword));
+    userRepository.save(user);
+}
+
 
 }

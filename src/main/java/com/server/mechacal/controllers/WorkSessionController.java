@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 public class WorkSessionController {
 
     private final WorkSessionService workSessionService;
-    // private final UserInfoService userInfoService;
 
     @GetMapping("/getAllSessions")
     public ResponseEntity<List<WorkSessionDto>> getAllSessions() 
@@ -45,9 +44,9 @@ public class WorkSessionController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<WorkSessionDto> createSession(@RequestParam String creatorId, @RequestBody WorkSessionDto workSession) 
+    public ResponseEntity<WorkSessionDto> createSession(@RequestParam String creatorId, @RequestBody WorkSessionDto dto) 
     {
-        WorkSessionDto createdSession = workSessionService.createSession(workSession, creatorId);
+        WorkSessionDto createdSession = workSessionService.createSession(dto, creatorId);
         return ResponseEntity.ok(createdSession);
     }
 
@@ -56,10 +55,10 @@ public class WorkSessionController {
     public ResponseEntity<WorkSessionDto> updateSession(
         @PathVariable String sessionId,
         // @RequestParam String requesterId,
-        @RequestBody WorkSessionDto workSessionDto) 
+        @RequestBody WorkSessionDto dto) 
     {
-        workSessionDto.setId(sessionId);
-        WorkSessionDto updatedSession = workSessionService.updateSession(workSessionDto);
+        dto.setId(sessionId);
+        WorkSessionDto updatedSession = workSessionService.updateSession(dto);
         return ResponseEntity.ok(updatedSession);
     }
 

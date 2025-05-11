@@ -35,8 +35,8 @@ public class WorkSession {
     @DBRef
     private List<User> participants;
 
-    // @DBRef
-    // private List<DesignInput> designInputs;
+    @DBRef
+    private DesignInput designInput;
 // 
     // @DBRef
     // private List<CalculationResult> calculationResults;

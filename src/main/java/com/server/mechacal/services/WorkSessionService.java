@@ -5,7 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.server.mechacal.auth.entities.User;
 import com.server.mechacal.auth.repositories.UserRepository;
 import com.server.mechacal.dto.WorkSessionDto;
+import com.server.mechacal.entities.DesignInput;
 import com.server.mechacal.entities.WorkSession;
+import com.server.mechacal.entities.Chapter.*;
+import com.server.mechacal.repositories.DesignInputRepository;
 import com.server.mechacal.repositories.WorkSessionRepository;
 import com.server.mechacal.exceptions.ForbiddenException;
 import com.server.mechacal.exceptions.UserNotFoundException;
@@ -23,12 +26,13 @@ public class WorkSessionService {
 
     private final WorkSessionRepository workSessionRepository;
     private final UserRepository userRepository;
+    private final DesignInputRepository designInputRepository;
 
-    public WorkSessionService(WorkSessionRepository workSessionRepository, 
-                              UserRepository userRepository) 
+    public WorkSessionService(WorkSessionRepository workSessionRepository, UserRepository userRepository, DesignInputRepository designInputRepository) 
     {
         this.workSessionRepository = workSessionRepository;
         this.userRepository = userRepository;
+        this.designInputRepository = designInputRepository;
     }
 
     public List<WorkSessionDto> getSessions()
@@ -40,6 +44,7 @@ public class WorkSessionService {
         {
             WorkSessionDto dto = new WorkSessionDto();
             dto.update(session);
+            dto.setDesignInputId(session.getDesignInput().getId());
             sessionDtos.add(dto);
         }
     
@@ -53,6 +58,7 @@ public class WorkSessionService {
 
         WorkSessionDto dto = new WorkSessionDto();
         dto.update(session);
+        dto.setDesignInputId(session.getDesignInput().getId());
         return dto;
     }
 
@@ -66,6 +72,7 @@ public class WorkSessionService {
             .map(session -> {
                 WorkSessionDto dto = new WorkSessionDto();
                 dto.update(session);
+                dto.setDesignInputId(session.getDesignInput().getId());
                 return dto;
             })
             .collect(Collectors.toList());
@@ -87,6 +94,17 @@ public class WorkSessionService {
                 participants.add(user);
             }
         }
+
+        DesignInput designInput = new DesignInput();
+        designInput.setChap1(new Chapter1());
+        designInput.setChap2(new Chapter2());
+        designInput.setChap3(new Chapter3());
+        designInput.setChap4(new Chapter4());
+        designInput.setChap5(new Chapter5());
+        designInput.setChap6(new Chapter6());
+        designInput.setChap7(new Chapter7());
+
+        DesignInput savedDesignInput = designInputRepository.save(designInput);
     
         WorkSession session = WorkSession.builder()
                 .title(dto.getTitle())
@@ -94,12 +112,14 @@ public class WorkSessionService {
                 .createdAt(LocalDateTime.now())
                 .status(dto.getStatus() != null ? dto.getStatus() : "IN_PROGRESS")
                 .participants(participants)
+                .designInput(savedDesignInput)
                 .build();
     
         WorkSession savedSession = workSessionRepository.save(session);
     
         WorkSessionDto response = new WorkSessionDto();
         response.update(savedSession);
+        response.setDesignInputId(savedDesignInput.getId());
         return response;
     }
 
@@ -120,6 +140,7 @@ public class WorkSessionService {
     
         WorkSessionDto response = new WorkSessionDto();
         response.update(updated);
+        response.setDesignInputId(updated.getDesignInput().getId());
         return response;
     }
     
@@ -132,7 +153,7 @@ public class WorkSessionService {
         {
             throw new ForbiddenException("Only the creator can delete this session");
         }
-    
+        designInputRepository.deleteById(session.getDesignInput().getId());
         workSessionRepository.deleteById(sessionId);
     }
 
@@ -174,6 +195,7 @@ public class WorkSessionService {
 
         WorkSessionDto dto = new WorkSessionDto();
         dto.update(saved);
+        dto.setDesignInputId(saved.getDesignInput().getId());
         return dto;
     }
     
