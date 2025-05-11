@@ -19,6 +19,7 @@ public class Chapter7Dto {
     private float slowTorque;
     private float contactStress;
     private int ratedLoad;
+    private float pitchDiametersprocket3;
     //output
     private int equivalentDynamic;
     private float bearingLifespan;
@@ -36,6 +37,7 @@ public class Chapter7Dto {
             .slowTorque(chapter7.getSlowTorque())
             .contactStress(chapter7.getContactStress())
             .ratedLoad(chapter7.getRatedLoad())
+            .pitchDiametersprocket3(chapter7.getPitchDiametersprocket3())
             .equivalentDynamic(chapter7.getEquivalentDynamic())
             .bearingLifespan(chapter7.getBearingLifespan())
             .housingThickness(chapter7.getHousingThickness())
@@ -43,5 +45,18 @@ public class Chapter7Dto {
             .oilViscosity(chapter7.getOilViscosity())
             .imported(chapter7.isImported())
             .build();
+    }
+
+    public void calculateOutput() {
+        if (pitchDiametersprocket3 == 0 || ratedLoad == 0) {
+            throw new IllegalArgumentException("Invalid input: pitch diameter or rated load cannot be zero.");
+        }
+
+        equivalentDynamic = Math.round((slowTorque * 1000) / pitchDiametersprocket3);
+        double lifespan = Math.pow((double) ratedLoad / equivalentDynamic, 3) * 1_000_000 / (60 * 290);
+        bearingLifespan = (float) lifespan;
+        housingThickness = (float) (0.03 * Math.cbrt(workingShaftPower * 1000));
+        boltDiameter = (float) Math.sqrt((4 * 5000.0) / (Math.PI * 100));
+        oilViscosity = contactStress * boltDiameter;
     }
 }

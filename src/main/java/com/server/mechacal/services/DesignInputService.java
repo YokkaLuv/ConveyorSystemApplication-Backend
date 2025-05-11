@@ -507,4 +507,222 @@ public class DesignInputService {
 
         return Chapter5Dto.from(chapter5);
     }
+
+    public Chapter6Dto getChapter6(String sessionId) {
+        WorkSession workSession = workSessionRepository.findById(sessionId)
+            .orElseThrow(() -> new SessionNotFoundException("Session not found with id: " + sessionId));
+
+        DesignInput designInput = workSession.getDesignInput();
+        if (designInput == null) {
+            throw new RuntimeException("DesignInput not found for this WorkSession");
+        }
+
+        Chapter6 chapter6 = designInput.getChap6();
+        Chapter6Dto updatedDto = Chapter6Dto.from(chapter6);
+        return updatedDto;
+    }
+
+
+    public Chapter6Dto updateChapter6(String sessionId, Chapter6Dto inputDto, boolean importFromPreviousChapters)
+    {
+        WorkSession workSession = workSessionRepository.findById(sessionId)
+            .orElseThrow(() -> new RuntimeException("WorkSession not found"));
+
+        DesignInput designInput = workSession.getDesignInput();
+        if (designInput == null) {
+            throw new RuntimeException("DesignInput not found for this WorkSession");
+        }
+
+        Chapter6 chapter6 = designInput.getChap6();
+        if (chapter6 == null) {
+            chapter6 = new Chapter6();
+        }
+    
+        if (importFromPreviousChapters) {
+            Chapter1 chapter1 = designInput.getChap1();
+            if (chapter1 == null) {
+                throw new RuntimeException("Chapter 1 not found to import data");
+            }
+            Chapter2 chapter2 = designInput.getChap2();
+            if (chapter2 == null) {
+                throw new RuntimeException("Chapter 2 not found to import data");
+            }
+            Chapter3 chapter3 = designInput.getChap3();
+            if (chapter3 == null) {
+                throw new RuntimeException("Chapter 3 not found to import data");
+            }
+            Chapter4 chapter4 = designInput.getChap4();
+            if (chapter4 == null) {
+                throw new RuntimeException("Chapter 4 not found to import data");
+            }
+            chapter6.setWorkingShaftPower(chapter1.getWorkingShaftPower());
+            chapter6.setMotorSpeed(chapter1.getMotorSpeed());
+            chapter6.setFastRatio(chapter3.getFastRatio());
+            chapter6.setSlowRatio(chapter3.getSlowRatio());
+            chapter6.setMinimalShaftDiameter(chapter4.getMinimalShaftDiameter());
+            chapter6.setSprocketTeeth1(chapter2.getSprocketTeeth1());
+            chapter6.setSprocketTeeth2(chapter2.getSprocketTeeth2());
+            chapter6.setImported(true);
+        } else {
+            chapter6.setWorkingShaftPower(inputDto.getWorkingShaftPower());
+            chapter6.setMotorSpeed(inputDto.getMotorSpeed());
+            chapter6.setFastRatio(inputDto.getFastRatio());
+            chapter6.setSlowRatio(inputDto.getSlowRatio());
+            chapter6.setMinimalShaftDiameter(inputDto.getMinimalShaftDiameter());
+            chapter6.setSprocketTeeth1(inputDto.getSprocketTeeth1());
+            chapter6.setSprocketTeeth2(inputDto.getSprocketTeeth2());
+            chapter6.setImported(true);
+        }
+    
+        designInput.setChap6(chapter6);
+        designInputRepository.save(designInput);
+        Chapter6Dto updatedDto = Chapter6Dto.from(chapter6);
+        return updatedDto;
+    }
+
+    public Chapter6Dto calculateChapter6Output(String sessionId) {
+        WorkSession workSession = workSessionRepository.findById(sessionId)
+            .orElseThrow(() -> new RuntimeException("WorkSession not found"));
+
+        DesignInput designInput = workSession.getDesignInput();
+        if (designInput == null) {
+            throw new RuntimeException("DesignInput not found for this WorkSession");
+        }
+
+        Chapter6 chapter6 = designInput.getChap6();
+        if (chapter6 == null) {
+            throw new RuntimeException("Chapter 6 not found");
+        }
+
+        Chapter6Dto dto = Chapter6Dto.from(chapter6);
+        dto.calculateOutput();
+
+        return dto;
+    }
+
+    public Chapter6Dto saveChapter6Output(String sessionId) {
+        WorkSession workSession = workSessionRepository.findById(sessionId)
+            .orElseThrow(() -> new RuntimeException("WorkSession not found"));
+
+        DesignInput designInput = workSession.getDesignInput();
+        if (designInput == null) {
+            throw new RuntimeException("DesignInput not found for this WorkSession");
+        }
+
+        Chapter6 chapter6 = designInput.getChap6();
+        if (chapter6 == null) {
+            throw new RuntimeException("Chapter 6 not found");
+        }
+
+        chapter6.calculateOutput();
+        designInput.setChap6(chapter6);
+        designInputRepository.save(designInput);
+
+        return Chapter6Dto.from(chapter6);
+    }
+
+    public Chapter7Dto getChapter7(String sessionId) {
+        WorkSession workSession = workSessionRepository.findById(sessionId)
+            .orElseThrow(() -> new SessionNotFoundException("Session not found with id: " + sessionId));
+
+        DesignInput designInput = workSession.getDesignInput();
+        if (designInput == null) {
+            throw new RuntimeException("DesignInput not found for this WorkSession");
+        }
+
+        Chapter7 chapter7 = designInput.getChap7();
+        Chapter7Dto updatedDto = Chapter7Dto.from(chapter7);
+        return updatedDto;
+    }
+
+
+    public Chapter7Dto updateChapter7(String sessionId, Chapter7Dto inputDto, boolean importFromPreviousChapters)
+    {
+        WorkSession workSession = workSessionRepository.findById(sessionId)
+            .orElseThrow(() -> new RuntimeException("WorkSession not found"));
+
+        DesignInput designInput = workSession.getDesignInput();
+        if (designInput == null) {
+            throw new RuntimeException("DesignInput not found for this WorkSession");
+        }
+
+        Chapter7 chapter7 = designInput.getChap7();
+        if (chapter7 == null) {
+            chapter7 = new Chapter7();
+        }
+    
+        if (importFromPreviousChapters) {
+            Chapter1 chapter1 = designInput.getChap1();
+            if (chapter1 == null) {
+                throw new RuntimeException("Chapter 1 not found to import data");
+            }
+            Chapter2 chapter2 = designInput.getChap2();
+            if (chapter2 == null) {
+                throw new RuntimeException("Chapter 2 not found to import data");
+            }
+            Chapter6 chapter6 = designInput.getChap6();
+            if (chapter6 == null) {
+                throw new RuntimeException("Chapter 6 not found to import data");
+            }
+            chapter7.setWorkingShaftPower(chapter1.getWorkingShaftPower());
+            chapter7.setSlowTorque(chapter6.getSlowTorque());
+            chapter7.setPitchDiametersprocket3(chapter6.getPitchDiametersprocket3());
+            chapter7.setContactStress(chapter6.getContactStress());
+            chapter7.setImported(true);
+        } else {
+            chapter7.setWorkingShaftPower(inputDto.getWorkingShaftPower());
+            chapter7.setSlowTorque(inputDto.getSlowTorque());
+            chapter7.setPitchDiametersprocket3(inputDto.getPitchDiametersprocket3());
+            chapter7.setContactStress(inputDto.getContactStress());
+            chapter7.setImported(false);
+        }
+    
+        chapter7.setRatedLoad(inputDto.getRatedLoad());
+    
+        designInput.setChap7(chapter7);
+        designInputRepository.save(designInput);
+        Chapter7Dto updatedDto = Chapter7Dto.from(chapter7);
+        return updatedDto;
+    }
+
+    public Chapter7Dto calculateChapter7Output(String sessionId) {
+        WorkSession workSession = workSessionRepository.findById(sessionId)
+            .orElseThrow(() -> new RuntimeException("WorkSession not found"));
+
+        DesignInput designInput = workSession.getDesignInput();
+        if (designInput == null) {
+            throw new RuntimeException("DesignInput not found for this WorkSession");
+        }
+
+        Chapter7 chapter7 = designInput.getChap7();
+        if (chapter7 == null) {
+            throw new RuntimeException("Chapter 7 not found");
+        }
+
+        Chapter7Dto dto = Chapter7Dto.from(chapter7);
+        dto.calculateOutput();
+
+        return dto;
+    }
+
+    public Chapter7Dto saveChapter7Output(String sessionId) {
+        WorkSession workSession = workSessionRepository.findById(sessionId)
+            .orElseThrow(() -> new RuntimeException("WorkSession not found"));
+
+        DesignInput designInput = workSession.getDesignInput();
+        if (designInput == null) {
+            throw new RuntimeException("DesignInput not found for this WorkSession");
+        }
+
+        Chapter7 chapter7 = designInput.getChap7();
+        if (chapter7 == null) {
+            throw new RuntimeException("Chapter 7 not found");
+        }
+
+        chapter7.calculateOutput();
+        designInput.setChap7(chapter7);
+        designInputRepository.save(designInput);
+
+        return Chapter7Dto.from(chapter7);
+    }
 }

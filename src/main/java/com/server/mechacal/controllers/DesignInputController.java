@@ -155,4 +155,56 @@ public class DesignInputController {
         Chapter5Dto updatedDto = designInputService.updateChapter5(sessionId, dto, imported);
         return ResponseEntity.ok(updatedDto);
     }
+
+    @GetMapping("/{sessionId}/chapter6")
+    public ResponseEntity<Chapter6Dto> getChapter6(@PathVariable String sessionId) {
+        Chapter6Dto dto = designInputService.getChapter6(sessionId);
+        return ResponseEntity.ok(dto);
+    }
+
+    @PostMapping("/{sessionId}/chapter6/calculate")
+    public ResponseEntity<Chapter6Dto> calculateChapter6Output(@PathVariable String sessionId) {
+        Chapter6Dto calculatedDto = designInputService.calculateChapter6Output(sessionId);
+        return ResponseEntity.ok(calculatedDto);
+    }
+
+    @PostMapping("/{sessionId}/chapter6/save")
+    public ResponseEntity<Chapter6Dto> saveChapter6Output(@PathVariable String sessionId) {
+        Chapter6Dto savedDto = designInputService.saveChapter6Output(sessionId);
+        return ResponseEntity.ok(savedDto);
+    }
+
+    @PutMapping("/{sessionId}/chapter6/update")
+    public ResponseEntity<Chapter6Dto> updateChapter6(@PathVariable String sessionId, 
+                    @RequestBody Chapter6Dto dto, 
+                    @RequestParam(required = false, defaultValue = "false") boolean imported) {
+        Chapter6Dto updatedDto = designInputService.updateChapter6(sessionId, dto, imported);
+        return ResponseEntity.ok(updatedDto);
+    }
+
+    @GetMapping("/{sessionId}/chapter7")
+    public ResponseEntity<Chapter7Dto> getChapter7(@PathVariable String sessionId) {
+        Chapter7Dto dto = designInputService.getChapter7(sessionId);
+        return ResponseEntity.ok(dto);
+    }
+
+    @PostMapping("/{sessionId}/chapter7/calculate")
+    public ResponseEntity<Chapter7Dto> calculateChapter7Output(@PathVariable String sessionId) {
+        Chapter7Dto calculatedDto = designInputService.calculateChapter7Output(sessionId);
+        return ResponseEntity.ok(calculatedDto);
+    }
+
+    @PostMapping("/{sessionId}/chapter7/save")
+    public ResponseEntity<Chapter7Dto> saveChapter7Output(@PathVariable String sessionId) {
+        Chapter7Dto savedDto = designInputService.saveChapter7Output(sessionId);
+        return ResponseEntity.ok(savedDto);
+    }
+
+    @PutMapping("/{sessionId}/chapter7/update")
+    public ResponseEntity<Chapter7Dto> updateChapter7(@PathVariable String sessionId, 
+                    @RequestBody Chapter7Dto dto, 
+                    @RequestParam(required = false, defaultValue = "false") boolean imported) {
+        Chapter7Dto updatedDto = designInputService.updateChapter7(sessionId, dto, imported);
+        return ResponseEntity.ok(updatedDto);
+    }
 }
